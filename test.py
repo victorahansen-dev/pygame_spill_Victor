@@ -1,23 +1,23 @@
-import sys, pygame
-pygame.init()
+import pygame, sys
 
-size = width, height = 1520, 800
-speed = [2, 2]
-black = 0, 0, 0
+clock = pygame.time.Clock()
 
-screen = pygame.display.set_mode(size)
+from pygame.locals import *
+pygame.init
 
-ball = pygame.image.load("japan.gif")
-ballrect = ball.get_rect()
+pygame.display.set_caption('My PyGame Window')
+
+WINDOW_SIZE = (400,400)
+
+screen = pygame.display.set_mode(WINDOW_SIZE,0,32)
 
 while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT: sys.exit()
-    ballrect = ballrect.move(speed)
-    if ballrect.left < 0 or ballrect.right > width:
-        speed[0] = -speed[0]
-    if ballrect.top < 0 or ballrect.bottom > height:
-        speed[1] = -speed[1]
-    screen.fill(black)
-    screen.blit(ball, ballrect)
-    pygame.display.flip()
+
+    for event in pygame.event.get() :
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+
+    
+    pygame.display.update()
+    clock.tick(60)
