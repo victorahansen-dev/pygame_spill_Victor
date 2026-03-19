@@ -12,7 +12,7 @@ GRAVITY = 0.55
 TILE = 48
 
 # Colours
-SKY        = (18,  18,  35)
+SKY        = (40,  67,  100)
 PLATFORM_C = (60,  90, 140)
 PLAYER_C   = (80, 200, 120)
 ENEMY_C    = (200,  60,  60)
