@@ -161,7 +161,7 @@ def main():
       # add a bit of y to it to not trigger the above code again
       ball_rect.top = 0
     # do the same thing with the bottom
-    if ball_rect.bottom > SCREEN_HEIGHT - ball_rect.height:
+    if ball_rect.bottom > SCREEN_HEIGHT:
       ball_accel_y *= -1
       ball_rect.top = SCREEN_HEIGHT - ball_rect.height
 
