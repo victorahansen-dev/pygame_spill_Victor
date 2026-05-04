@@ -11,3 +11,6 @@ legget til kollisjon på bunn av spillvindu.
 
 30.04.2026
 settet a & d for høyre og venstre for bevegelse.
+
+02.05.2026
+settet opp animasjon for venstre
