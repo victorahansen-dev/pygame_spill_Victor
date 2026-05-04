@@ -8,3 +8,6 @@ Settet inn første frame av karakter.
 settet lava på bunn av spillvinduet.
 legget til sprite, kan gå høyre, venstre og hoppe.
 legget til kollisjon på bunn av spillvindu.
+
+30.04.2026
+settet a & d for høyre og venstre for bevegelse.
