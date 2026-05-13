@@ -27,7 +27,7 @@ class Player():
         self.counter = 0
         # lager en liste for alle sprites
         for num in range (1, 3):
-            img_right = pygame.image.load(f'assets/img/sprite_idle{num}.png') 
+            img_right = pygame.image.load(f'assets/img/sprite{num}.png') 
             img_right = pygame.transform.scale(img_right, (100, 100)) # skalerer karakteren
             img_left = pygame.transform.flip(img_right, True, False) # snur Y-aksen og ikke X-aksen
             self.images_right.append(img_right)
@@ -37,6 +37,8 @@ class Player():
         # x & y variabler
         self.rect.x = x
         self.rect.y = y
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
         self.vel_y = 0
         self.jumped = False
         self.direction = 0
@@ -69,11 +71,17 @@ class Player():
             dx += 5
             self.counter += 1
             self.direction = 1
-        # setter sprite tilbake til idle1
-        if key[pygame.K_LEFT] == False and key[pygame.K_RIGHT] == False:
+        # setter sprite tilbake til sprite1
+        if key[pygame.K_LEFT] == False and key[pygame.K_RIGHT] == False and key[pygame.K_a] == False and key[pygame.K_d] == False:
             self.counter = 0
             self.index = 0
             self.image = self.images_right[self.index]
+            #karakter ser mot høyre statisk
+            if self.direction == 1:
+                self.image = self.images_right[self.index]
+            #karakter ser mot venstre statisk
+            if self.direction == -1:
+                self.image = self.images_left[self.index]
         #animasjon
         
         if self.counter > walk_cooldown:
@@ -93,8 +101,21 @@ class Player():
             self.vel_y = 10
         dy += self.vel_y
 
-        #sjekk for kollisjon
+        #kollisjon
+        for tile in world.tile_list:
+            #sjekk for kollisjon i x-akse
+            if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
+                dx = 0
 
+            # check for kollisjon i y-asken
+            if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
+                #sjekk om karakter er under bakken (hoppe)
+                if self.vel_y < 0:
+                    dy = tile[1].bottom - self.rect.top # flytter på karakter til hodet kolliderer med noe
+                    self.vel_y = 0
+                #sjekk om karakter er over bakken (falle)
+                elif self.vel_y >= 0:
+                    dy = tile[1].top - self.rect.bottom # samme logikk men snudd
 
         #oppdater spiller posisjon
         self.rect.x += dx
@@ -103,9 +124,9 @@ class Player():
             self.rect.bottom = screen_height
             dy = 0
             
-
         # tegn spiller på skjerm
         screen.blit(self.image, self.rect)
+        pygame.draw.rect(screen, ( 255, 255, 255), self.rect, 2)
 
 #spill vinduet/selve verden
 class World():
@@ -132,7 +153,7 @@ class World():
     def draw(self):
         for tile in self.tile_list:
             screen.blit(tile[0], tile[1])
-
+            pygame.draw.rect(screen, (255, 255, 255), tile[1], 2)
 
 world_data = [
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -150,10 +171,10 @@ world_data = [
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 ]
 
