@@ -17,3 +17,4 @@ settet opp animasjon for venstre
 
 12.05.2026
 legget til kollisjon og oppdatert sprite animasjon
+
