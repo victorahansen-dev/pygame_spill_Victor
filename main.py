@@ -12,37 +12,48 @@ screen_height = 1000
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('platformer game')
 
-# definerer spill variabler
+# game variables
 tile_size = 50
 game_over = 0
 
 # load img
 bg_img = pygame.image.load('assets/img/sky.png')
+restart_img = pygame.image.load('assets/img/restart_btn.png')
+
+
+class Button():
+    def __init__(self, x, y, image):
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.clicked = False
+
+    def draw(self):
+        action = False
+        # get mouse position
+        pos = pygame.mouse.get_pos()
+
+        # check mouseover and clicked conditions
+        if self.rect.collidepoint(pos):
+            if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+                action = True
+                self.clicked = True
+
+        if pygame.mouse.get_pressed()[0] == 0:
+            self.clicked = False
+
+        # draw button on screen
+        screen.blit(self.image, self.rect)
+
+        return action
+
 
 #lager karakter/spilleren
 class Player():
     def __init__(self, x, y):
-        self.images_right = []
-        self.images_left = []
-        self.index = 0
-        self.counter = 0
-        # lager en liste for alle sprites
-        for num in range (1, 3):
-            img_right = pygame.image.load(f'assets/img/sprite_idle{num}.png') 
-            img_right = pygame.transform.scale(img_right, (100,100)) # skalerer karakteren
-            img_left = pygame.transform.flip(img_right, True, False) # snur Y-aksen og ikke X-aksen
-            self.images_right.append(img_right)
-            self.images_left.append(img_left) # legger til bildene i listen
-        self.image = self.images_right[self.index] # bruker første bilde når man starter spillet
-        self.rect = self.image.get_rect()
-        # x & y variabler
-        self.rect.x = x
-        self.rect.y = y
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
-        self.vel_y = 0
-        self.jumped = False
-        self.direction = 0
+        self.reset(x, y)
+
 
     def update(self, game_over):
         dx = 0
@@ -121,24 +132,45 @@ class Player():
                     elif self.vel_y >= 0:
                         dy = tile[1].top - self.rect.bottom # samme logikk men snudd
 
-            #sjekk for kollisjon med fiender
+            #collision check for enemies
             if pygame.sprite.spritecollide(self, blob_group, False):
                 game_over = -1
 
-            #sjekk for kollisjon med lava
+            #collision check for lava
             if pygame.sprite.spritecollide(self, lava_group, False):
                 game_over = -1
 
-            #oppdater spiller posisjon
+            #update player position
             self.rect.x += dx
             self.rect.y += dy
 
-            
-        # tegn spiller på skjerm
-    if game_over == 0:
+        
         screen.blit(self.image, self.rect)
 
-        return game_over
+        return game_over 
+
+    def reset(self, x, y):
+        self.images_right = []
+        self.images_left = []
+        self.index = 0
+        self.counter = 0
+        # goes through sprite animation and adds them to the list
+        for num in range (1, 3):
+            img_right = pygame.image.load(f'assets/img/sprite_idle{num}.png') 
+            img_right = pygame.transform.scale(img_right, (100,100)) # skalerer karakteren
+            img_left = pygame.transform.flip(img_right, True, False) # snur Y-aksen og ikke X-aksen
+            self.images_right.append(img_right)
+            self.images_left.append(img_left) # legger til bildene i listen
+        self.image = self.images_right[self.index] # bruker første bilde når man starter spillet
+        self.rect = self.image.get_rect()
+        # x & y variables
+        self.rect.x = x
+        self.rect.y = y
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+        self.vel_y = 0
+        self.jumped = False
+        self.direction = 0
 
 #spill vinduet/selve verden
 class World():
@@ -233,8 +265,10 @@ world_data = [
 player = Player(100, screen_height - 130)
 
 lava_group = pygame.sprite.Group()
-
 blob_group = pygame.sprite.Group()
+
+# lag knapper
+restart_button = Button(screen_width // 2 - 50, screen_height // 2 + 100, restart_img)
 
 world = World(world_data)
 
@@ -251,6 +285,11 @@ while run:
     lava_group.draw(screen)
 
     game_over = player.update(game_over)
+
+    if game_over == -1:
+        if restart_button.draw():
+            player = reset(100, screen_height - 300)
+            game_over = 0
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
