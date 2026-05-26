@@ -15,11 +15,13 @@ pygame.display.set_caption('platformer game')
 # game variables
 tile_size = 50
 game_over = 0
+menu = True
 
 # load img
 bg_img = pygame.image.load('assets/img/sky.png').convert()
 restart_img = pygame.image.load('assets/img/restart_btn.png').convert_alpha()
-
+start_img = pygame.image.load('assets/img/start_btn.png').convert_alpha()
+exit_img = pygame.image.load('assets/img/exit_btn.png').convert_alpha()
 
 class Button():
     def __init__(self, x, y, image):
@@ -266,35 +268,43 @@ player = Player(100, screen_height - 300)
 lava_group = pygame.sprite.Group()
 blob_group = pygame.sprite.Group()
 
-# lag knapper
-restart_button = Button(screen_width // 2 - 50, screen_height // 2 + 100, restart_img)
-
 world = World(world_data)
+
+# create button instances
+restart_button = Button(screen_width // 2 - 50, screen_height // 2 + 100, restart_img)
+start_button = Button(screen_width // 2 - 350, screen_height // 2, start_img)
+exit_button = Button(screen_width // 2 + 150, screen_height // 2 , exit_img)
 
 run = True
 while run:
     clock.tick(fps)
-    
 
     screen.blit(bg_img, (0, 0))
 
-    world.draw()
+    if menu == True:
+        if exit_button.draw():
+            run = False
+        if start_button.draw():
+            menu = False
 
-    if game_over == 0:
-        blob_group.update()
-    blob_group.draw(screen)
-    lava_group.draw(screen)
+    else:
+        world.draw()
 
-    game_over = player.update(game_over)
+        if game_over == 0:
+            blob_group.update()
+        blob_group.draw(screen)
+        lava_group.draw(screen)
 
-    if game_over == -1:
-        if restart_button.draw():
-            player.reset(100, screen_height - 300)
-            game_over = 0
+        game_over = player.update(game_over)
 
-    fps_font = pygame.font.SysFont('Arial', 20)
-    fps_text = fps_font.render(f'FPS: {int(clock.get_fps())}', True, (255, 255, 0))
-    screen.blit(fps_text, (10, 10))
+        if game_over == -1:
+            if restart_button.draw():
+                player.reset(100, screen_height - 300)
+                game_over = 0
+
+        fps_font = pygame.font.SysFont('Arial', 20)
+        fps_text = fps_font.render(f'FPS: {int(clock.get_fps())}', True, (255, 255, 0))
+        screen.blit(fps_text, (10, 10))
 
 
     for event in pygame.event.get():
