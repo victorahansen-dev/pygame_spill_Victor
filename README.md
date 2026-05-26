@@ -20,3 +20,6 @@ legget til kollisjon og oppdatert sprite animasjon
 
 19.05.2026
 laget første lvl til spillet.
+
+26.05.2026
+lagd ny sprite med ordentlig animasjon.
