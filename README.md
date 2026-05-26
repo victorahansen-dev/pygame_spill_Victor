@@ -30,3 +30,5 @@ legget til "restart" knapp for når man dør.
 26.05.2026
 lagd ny sprite med ordentlig animasjon.
 karakter blir borte når man dør.
+legget til tekst som viser fps.
+kan også nå bruke "R" knappen til å starte på nytt etter man dør.
