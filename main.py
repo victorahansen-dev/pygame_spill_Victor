@@ -155,9 +155,9 @@ class Player():
         self.index = 0
         self.counter = 0
         # goes through sprite animation and adds them to the list
-        for num in range (1, 3):
-            img_right = pygame.image.load(f'assets/img/sprite_idle{num}.png') 
-            img_right = pygame.transform.scale(img_right, (100,100)) # skalerer karakteren
+        for num in range (1, 5):
+            img_right = pygame.image.load(f'assets/img/sprite_guy{num}.png') 
+            img_right = pygame.transform.scale(img_right, (60,80)) # skalerer karakteren
             img_left = pygame.transform.flip(img_right, True, False) # snur Y-aksen og ikke X-aksen
             self.images_right.append(img_right)
             self.images_left.append(img_left) # legger til bildene i listen
@@ -249,8 +249,8 @@ world_data = [
 [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
 [2, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
 [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-[2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 2],
-[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+[2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 2],
+[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 2],
 [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 2],
 [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
 [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 2],
@@ -262,7 +262,7 @@ world_data = [
 [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
 ]
 
-player = Player(100, screen_height - 130)
+player = Player(100, screen_height - 300)
 
 lava_group = pygame.sprite.Group()
 blob_group = pygame.sprite.Group()
@@ -288,8 +288,9 @@ while run:
 
     if game_over == -1:
         if restart_button.draw():
-            player = reset(100, screen_height - 300)
+            player.reset(100, screen_height - 300)
             game_over = 0
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
