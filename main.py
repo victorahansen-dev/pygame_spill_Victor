@@ -64,11 +64,8 @@ class Player():
         if game_over == 0:
             #get keypresses
             key = pygame.key.get_pressed()
-            if key[pygame.K_SPACE] and self.jumped == False and self.in_air == False:
+            if key[pygame.K_SPACE] and self.in_air == False:
                 self.vel_y = -15
-                self.jumped = True
-            if key[pygame.K_SPACE] == False:
-                self.jumped = False
             if key[pygame.K_LEFT]:
                 dx -= 5
                 self.counter += 1
@@ -171,7 +168,6 @@ class Player():
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         self.vel_y = 0
-        self.jumped = False
         self.direction = 0
         self.in_air = True
 
