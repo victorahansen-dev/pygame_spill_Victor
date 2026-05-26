@@ -146,9 +146,9 @@ class Player():
             self.rect.x += dx
             self.rect.y += dy
 
-        
-        screen.blit(self.image, self.rect)
-
+        # draws character on screen when not dead
+        if game_over == 0:
+            screen.blit(self.image, self.rect)
         return game_over 
 
     def reset(self, x, y):
