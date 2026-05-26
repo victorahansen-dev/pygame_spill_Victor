@@ -300,6 +300,10 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_r and game_over == -1:
+                player.reset(100, screen_height - 300)
+                game_over = 0
 
     pygame.display.update()
 
