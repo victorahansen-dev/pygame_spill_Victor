@@ -17,8 +17,8 @@ tile_size = 50
 game_over = 0
 
 # load img
-bg_img = pygame.image.load('assets/img/sky.png')
-restart_img = pygame.image.load('assets/img/restart_btn.png')
+bg_img = pygame.image.load('assets/img/sky.png').convert()
+restart_img = pygame.image.load('assets/img/restart_btn.png').convert_alpha()
 
 
 class Button():
@@ -158,7 +158,7 @@ class Player():
         self.counter = 0
         # goes through sprite animation and adds them to the list
         for num in range (1, 5):
-            img_right = pygame.image.load(f'assets/img/sprite_guy{num}.png') 
+            img_right = pygame.image.load(f'assets/img/sprite_guy{num}.png').convert_alpha()
             img_right = pygame.transform.scale(img_right, (60,80)) # character scale
             img_left = pygame.transform.flip(img_right, True, False) # flips only X-axis
             self.images_right.append(img_right)
@@ -181,9 +181,9 @@ class World():
         self.tile_list = []
 
         #load img
-        lava_img = pygame.image.load('assets/img/lava.png')
-        dirt_img = pygame.image.load('assets/img/tile_dirt.png')
-        grass_img = pygame.image.load('assets/img/tile_grass.png')
+        lava_img = pygame.image.load('assets/img/lava.png').convert_alpha()
+        dirt_img = pygame.image.load('assets/img/tile_dirt.png').convert_alpha()
+        grass_img = pygame.image.load('assets/img/tile_grass.png').convert_alpha()
 
         row_count = 0
         for row in data:
@@ -278,6 +278,8 @@ world = World(world_data)
 run = True
 while run:
     clock.tick(fps)
+    
+
     screen.blit(bg_img, (0, 0))
 
     world.draw()
@@ -293,6 +295,10 @@ while run:
         if restart_button.draw():
             player.reset(100, screen_height - 300)
             game_over = 0
+
+    fps_font = pygame.font.SysFont('Arial', 20)
+    fps_text = fps_font.render(f'FPS: {int(clock.get_fps())}', True, (255, 255, 0))
+    screen.blit(fps_text, (10, 10))
 
 
     for event in pygame.event.get():
