@@ -21,5 +21,12 @@ legget til kollisjon og oppdatert sprite animasjon
 19.05.2026
 laget første lvl til spillet.
 
+22.05.2026
+legget til fiender og mulighet til å dø hvis man treffer fiende eller lava.
+
+23.05.2026
+legget til "restart" knapp for når man dør.
+
 26.05.2026
 lagd ny sprite med ordentlig animasjon.
+karakter blir borte når man dør.
