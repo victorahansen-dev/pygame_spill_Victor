@@ -32,3 +32,7 @@ lagd ny sprite med ordentlig animasjon.
 karakter blir borte når man dør.
 legget til tekst som viser fps.
 kan også nå bruke "R" knappen til å starte på nytt etter man dør.
+
+28.05.2026
+laget dør og mulighet til å vinne.
+legget til text pop-up for når man dør og vinner.

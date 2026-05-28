@@ -22,6 +22,7 @@ bg_img = pygame.image.load('assets/img/sky.png').convert()
 restart_img = pygame.image.load('assets/img/restart_btn.png').convert_alpha()
 start_img = pygame.image.load('assets/img/start_btn.png').convert_alpha()
 exit_img = pygame.image.load('assets/img/exit_btn.png').convert_alpha()
+door_img = pygame.image.load('assets/img/door.png').convert_alpha()
 
 class Button():
     def __init__(self, x, y, image):
@@ -51,7 +52,7 @@ class Button():
         return action
 
 
-#lager karakter/spilleren
+#character
 class Player():
     def __init__(self, x, y):
         self.reset(x, y)
@@ -140,6 +141,10 @@ class Player():
             #collision check for lava
             if pygame.sprite.spritecollide(self, lava_group, False):
                 game_over = -1
+                
+            # collision check for exit door
+            if pygame.sprite.spritecollide(self, exit_group, False):
+                game_over = 1  # 1 = win state
 
             #update player position
             self.rect.x += dx
@@ -172,6 +177,7 @@ class Player():
         self.vel_y = 0
         self.direction = 0
         self.in_air = True
+
 
 #game window
 class World():
@@ -207,12 +213,27 @@ class World():
                 if tile == 4:
                     blob = Enemy(col_count * tile_size, row_count * tile_size + 15)
                     blob_group.add(blob)
+                if tile == 5:
+                    img = pygame.transform.scale(door_img, (tile_size, tile_size * 2))
+                    img_rect = img.get_rect()
+                    img_rect.x = col_count * tile_size
+                    img_rect.y = row_count * tile_size - tile_size
+                    door = ExitDoor(img_rect.x, img_rect.y)
+                    exit_group.add(door)
                 col_count += 1
             row_count += 1
 
     def draw(self):
         for tile in self.tile_list:
             screen.blit(tile[0], tile[1])
+
+class ExitDoor(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.transform.scale(door_img, (tile_size, tile_size * 2))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -244,7 +265,7 @@ world_data = [
 [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
 [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
 [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-[2, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+[2, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 5, 0, 2],
 [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 2],
 [2, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 2],
 [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
@@ -267,6 +288,8 @@ player = Player(100, screen_height - 300)
 
 lava_group = pygame.sprite.Group()
 blob_group = pygame.sprite.Group()
+exit_group = pygame.sprite.Group()
+
 
 world = World(world_data)
 
@@ -280,13 +303,13 @@ while run:
     clock.tick(fps)
 
     screen.blit(bg_img, (0, 0))
-
+    #start menu first appears when game is opened
     if menu == True:
         if exit_button.draw():
             run = False
         if start_button.draw():
             menu = False
-
+    #runs if start button has been pressed
     else:
         world.draw()
 
@@ -294,14 +317,28 @@ while run:
             blob_group.update()
         blob_group.draw(screen)
         lava_group.draw(screen)
-
+        exit_group.draw(screen)
         game_over = player.update(game_over)
-
+        
+        # death screen
         if game_over == -1:
+            death_font = pygame.font.SysFont('Arial', 80, bold=True)
+            death_text = death_font.render('You died! D: Try again?', True, (255, 215, 0))
+            screen.blit(death_text, (screen_width // 2 - death_text.get_width() // 2,
+                                            screen_height // 2 - death_text.get_height() // 2))
             if restart_button.draw():
                 player.reset(100, screen_height - 300)
                 game_over = 0
-
+        #win screen
+        if game_over == 1:
+            win_font = pygame.font.SysFont('Arial', 80, bold=True)
+            win_text = win_font.render('You did it! :D', True, (255, 215, 0))
+            screen.blit(win_text, (screen_width // 2 - win_text.get_width() // 2,
+                                            screen_height // 2 - win_text.get_height() // 2))
+            if restart_button.draw():
+                player.reset(100, screen_height - 300)
+                game_over = 0
+            
         fps_font = pygame.font.SysFont('Arial', 20)
         fps_text = fps_font.render(f'FPS: {int(clock.get_fps())}', True, (255, 255, 0))
         screen.blit(fps_text, (10, 10))
@@ -310,6 +347,7 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        #press R key or press restart button to restart game    
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r and game_over == -1:
                 player.reset(100, screen_height - 300)
