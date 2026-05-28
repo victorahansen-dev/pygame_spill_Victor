@@ -202,7 +202,6 @@ class World():
                     lava = Lava(col_count * tile_size, row_count * tile_size)
                     lava_group.add(lava)
                 if tile == 2:
-                    # dirt tile — solid wall/floor
                     img = pygame.transform.scale(dirt_img, (tile_size, tile_size))
                     img_rect = img.get_rect()
                     img_rect.x = col_count * tile_size
@@ -210,7 +209,6 @@ class World():
                     tile = (img, img_rect)
                     self.tile_list.append(tile)
                 if tile == 3:
-                    # grass tile — solid platform
                     img = pygame.transform.scale(grass_img, (tile_size, tile_size))
                     img_rect = img.get_rect()
                     img_rect.x = col_count * tile_size
