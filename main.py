@@ -222,7 +222,6 @@ class World():
                     blob = Enemy(col_count * tile_size, row_count * tile_size + 15)
                     blob_group.add(blob)
                 if tile == 5:
-                    # exit door — offset upward by one tile so it sits on top of the platform
                     img = pygame.transform.scale(door_img, (tile_size, tile_size * 2))
                     img_rect = img.get_rect()
                     img_rect.x = col_count * tile_size
