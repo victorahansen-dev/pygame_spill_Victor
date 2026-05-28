@@ -1,29 +1,39 @@
 import pygame
+
 import sys
 
 pygame.init()
 
 clock = pygame.time.Clock()
+
 fps = 60
 
 screen_width = 1000
 screen_height = 1000
-
 screen = pygame.display.set_mode((screen_width, screen_height))
+
 pygame.display.set_caption('platformer game')
 
 # game variables
 tile_size = 50
+
 game_over = 0
+
 menu = True
 
 # load images
 bg_img = pygame.image.load('assets/img/sky.png').convert()
+
 restart_img = pygame.image.load('assets/img/restart_btn.png').convert_alpha()
+
 start_img = pygame.image.load('assets/img/start_btn.png').convert_alpha()
+
 exit_img = pygame.image.load('assets/img/exit_btn.png').convert_alpha()
+
 door_img = pygame.image.load('assets/img/door.png').convert_alpha()
+
 sand_img = pygame.image.load('assets/img/tile_sand.png').convert_alpha()
+
 stone_img = pygame.image.load('assets/img/tile_stone.png').convert_alpha()
 
 # clickable button class
@@ -49,7 +59,6 @@ class Button():
         # reset click when mouse button is released
         if pygame.mouse.get_pressed()[0] == 0:
             self.clicked = False
-
         screen.blit(self.image, self.rect)
         return action
 
@@ -132,23 +141,19 @@ class Player():
                         dy = tile[1].top - self.rect.bottom
                         self.vel_y = 0
                         self.in_air = False
-
             # touching an enemy kills the player
             if pygame.sprite.spritecollide(self, blob_group, False):
                 game_over = -1
-
             # touching lava kills the player
             if pygame.sprite.spritecollide(self, lava_group, False):
                 game_over = -1
-
             # touching the exit door triggers the win state
             if pygame.sprite.spritecollide(self, exit_group, False):
                 game_over = 1
-
             # apply movement
             self.rect.x += dx
             self.rect.y += dy
-
+        
         # only draw player if alive
         if game_over == 0:
             screen.blit(self.image, self.rect)
@@ -159,7 +164,7 @@ class Player():
         self.images_left = []
         self.index = 0
         self.counter = 0
-
+        
         # load all walk animation frames and create mirrored left-facing versions
         for num in range(1, 5):
             img_right = pygame.image.load(f'assets/img/sprite_guy{num}.png').convert_alpha()
@@ -179,12 +184,10 @@ class Player():
         self.direction = 0
         self.in_air = True
 
-
 # world class builds the level from the grid data
 class World():
     def __init__(self, data):
         self.tile_list = []
-
         # load tile images
         lava_img = pygame.image.load('assets/img/lava.png').convert_alpha()
         dirt_img = pygame.image.load('assets/img/tile_dirt.png').convert_alpha()
@@ -247,7 +250,6 @@ class World():
         for tile in self.tile_list:
             screen.blit(tile[0], tile[1])
 
-
 # exit door, triggers win state when collided with
 class ExitDoor(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -256,8 +258,7 @@ class ExitDoor(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-
-
+        
 # enemy that patrols back and forth
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -276,8 +277,6 @@ class Enemy(pygame.sprite.Sprite):
         if abs(self.move_counter) > 50:
             self.move_direction *= -1
             self.move_counter *= -1
-
-
 # lava tile — kills the player on contact
 class Lava(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -287,7 +286,6 @@ class Lava(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-
 # level layout — 0: empty, 1: lava, 2: dirt, 3: grass, 4: enemy, 5: exit door, 6: sand
 level = 0
 level_data = [
@@ -336,9 +334,11 @@ level_data = [
     [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
     [6, 6, 6, 6, 6, 6, 6, 1, 1, 1, 1, 1, 1, 6, 6, 6, 6, 6, 6, 6],
     [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
+
     ],
     # level 3
 [
+
     [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
     [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
     [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
@@ -347,8 +347,8 @@ level_data = [
     [7, 0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
     [7, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
     [7, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 7],
-    [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
-    [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 7],
+    [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 7],
+    [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 0, 0, 7],
     [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
     [7, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 7],
     [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7],
@@ -359,9 +359,10 @@ level_data = [
     [7, 0, 0, 0, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
     [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
     [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7]
-]
+
 ]
 
+]
 
 #resets level
 def reset_level(level_num):
@@ -406,7 +407,6 @@ run = True
 while run:
     clock.tick(fps)
     screen.blit(bg_img, (0, 0))
-
     # show main menu until start is pressed
     if menu == True:
         if exit_button.draw():
@@ -416,30 +416,37 @@ while run:
         startMenu_font = pygame.font.SysFont('Arial', 80, bold=True)
         startMenu_text = startMenu_font.render('super epic platformer', True, (0, 175, 0))
         screen.blit(startMenu_text, (screen_width // 2 - startMenu_text.get_width() // 2,
+
                                 screen_height // 3  - startMenu_text.get_height() // 2))
 
     else:
         # draw the level
         world.draw()
-
         # update and draw enemies, lava, and door
         if game_over == 0:
             blob_group.update()
+            lava_group.update()
+            exit_group.update()
+
         blob_group.draw(screen)
         lava_group.draw(screen)
         exit_group.draw(screen)
 
+
+
         # update player
         game_over = player.update(game_over)
+
         # death screen
         if game_over == -1:
             death_font = pygame.font.SysFont('Arial', 60, bold=True)
             death_text = death_font.render('You died! D: Try again?', True, (0, 175, 100))
             screen.blit(death_text, (screen_width // 2 - death_text.get_width() // 2,
+
                                      screen_height // 2 - death_text.get_height() // 2))
+
             if restart_button.draw():
                 restart_current()
-
         # win screen
         if game_over == 1:
             win_font = pygame.font.SysFont('Arial', 60, bold=True)
@@ -452,7 +459,6 @@ while run:
         fps_font = pygame.font.SysFont('Arial', 20)
         fps_text = fps_font.render(f'FPS: {int(clock.get_fps())}', True, (255, 255, 0))
         screen.blit(fps_text, (10, 10))
-
     # handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -463,5 +469,4 @@ while run:
             if event.key == pygame.K_r and game_over == 1:
                 next_level()
     pygame.display.update()
-
 pygame.quit()

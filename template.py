@@ -547,6 +547,5 @@ def main():
         else:
             show_screen(screen, "YOU DIED", "Press R or any key to restart", color=(220,80,80))  # Viser dødsskjerm
 
-
 if __name__ == "__main__":
     main()  # Starter spillet når filen kjøres direkte
