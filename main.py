@@ -23,6 +23,7 @@ restart_img = pygame.image.load('assets/img/restart_btn.png').convert_alpha()
 start_img = pygame.image.load('assets/img/start_btn.png').convert_alpha()
 exit_img = pygame.image.load('assets/img/exit_btn.png').convert_alpha()
 door_img = pygame.image.load('assets/img/door.png').convert_alpha()
+sand_img = pygame.image.load('assets/img/tile_sand.png').convert_alpha()
 
 # clickable button class
 class Button():
@@ -224,6 +225,13 @@ class World():
                     img_rect.y = row_count * tile_size - tile_size
                     door = ExitDoor(img_rect.x, img_rect.y)
                     exit_group.add(door)
+                if tile == 6:
+                    img = pygame.transform.scale(sand_img, (tile_size, tile_size))
+                    img_rect = img.get_rect()
+                    img_rect.x = col_count * tile_size
+                    img_rect.y = row_count * tile_size
+                    tile = (img, img_rect)
+                    self.tile_list.append(tile)
                 col_count += 1
             row_count += 1
 
@@ -232,7 +240,7 @@ class World():
             screen.blit(tile[0], tile[1])
 
 
-# exit door — reaching it triggers the win state
+# exit door, triggers win state when collided with
 class ExitDoor(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -273,29 +281,66 @@ class Lava(pygame.sprite.Sprite):
         self.rect.y = y
 
 
-# level layout — 0: empty, 1: lava, 2: dirt, 3: grass, 4: enemy, 5: exit door
-world_data = [
-[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-[2, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 5, 0, 2],
-[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 2],
-[2, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 2],
-[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-[2, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-[2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 2],
-[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 2],
-[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 2],
-[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 2],
-[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-[2, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-[2, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+# level layout — 0: empty, 1: lava, 2: dirt, 3: grass, 4: enemy, 5: exit door, 6: sand
+level = 0
+level_data = [
+    # level 1
+    [
+    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 5, 0, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 2],
+    [2, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+    ],
+    # level 2
+    [
+    [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 6],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 0, 0, 0, 0, 6],
+    [6, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
+    [6, 0, 0, 0, 6, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 0, 0, 0, 0, 4, 0, 0, 6],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 0, 6],
+    [6, 0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
+    [6, 6, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
+    [6, 0, 0, 0, 0, 6, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0, 0, 0, 6],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 6],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
+    [6, 0, 0, 6, 6, 6, 0, 0, 6, 6, 6, 0, 0, 0, 0, 0, 0, 6, 6, 6],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
+    [6, 6, 6, 6, 6, 6, 6, 1, 1, 1, 1, 1, 1, 6, 6, 6, 6, 6, 6, 6],
+    [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
+    ],
 ]
+
+
+#level reset
+def reset_level(level_num):
+    global level
+    player.reset(100, screen_height - 300)
+    lava_group.empty()
+    blob_group.empty()
+    exit_group.empty()
+    return World(level_data[level_num])
 
 # create player, sprite groups, and the world
 player = Player(100, screen_height - 300)
@@ -304,18 +349,30 @@ lava_group = pygame.sprite.Group()
 blob_group = pygame.sprite.Group()
 exit_group = pygame.sprite.Group()
 
-world = World(world_data)
+world = reset_level(level)
 
 # create UI buttons
 restart_button = Button(screen_width // 2 - 50, screen_height // 2 + 100, restart_img)
 start_button = Button(screen_width // 2 - 350, screen_height // 2, start_img)
 exit_button = Button(screen_width // 2 + 150, screen_height // 2, exit_img)
 
+def next_level():
+    global level, world, game_over
+    level += 1
+    if level >= len(level_data):
+        level = 0
+    world = reset_level(level)
+    game_over = 0
+
+def restart_current():
+    global world, game_over
+    world = reset_level(level)
+    game_over = 0
+
 # main game loop
 run = True
 while run:
     clock.tick(fps)
-
     screen.blit(bg_img, (0, 0))
 
     # show main menu until start is pressed
@@ -338,7 +395,6 @@ while run:
 
         # update player
         game_over = player.update(game_over)
-
         # death screen
         if game_over == -1:
             death_font = pygame.font.SysFont('Arial', 80, bold=True)
@@ -346,38 +402,26 @@ while run:
             screen.blit(death_text, (screen_width // 2 - death_text.get_width() // 2,
                                      screen_height // 2 - death_text.get_height() // 2))
             if restart_button.draw():
-                player.reset(100, screen_height - 300)
-                game_over = 0
+                restart_current()
 
         # win screen
         if game_over == 1:
             win_font = pygame.font.SysFont('Arial', 80, bold=True)
             win_text = win_font.render('You did it! :D', True, (255, 215, 0))
             screen.blit(win_text, (screen_width // 2 - win_text.get_width() // 2,
-                                   screen_height // 2 - win_text.get_height() // 2))
+                                    screen_height // 2 - win_text.get_height() // 2))
             if restart_button.draw():
-                player.reset(100, screen_height - 300)
-                game_over = 0
-
-        # FPS counter
-        fps_font = pygame.font.SysFont('Arial', 20)
-        fps_text = fps_font.render(f'FPS: {int(clock.get_fps())}', True, (255, 255, 0))
-        screen.blit(fps_text, (10, 10))
+                next_level()
 
     # handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-        # press R to restart after dying
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r and game_over == -1:
-                player.reset(100, screen_height - 300)
-                game_over = 0
-        # press R to restart after winning
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r and game_over == 1:
-                    player.reset(100, screen_height - 300)
-                    game_over = 0
+                restart_current()
+            if event.key == pygame.K_r and game_over == 1:
+                next_level()
     pygame.display.update()
 
 pygame.quit()
