@@ -311,10 +311,10 @@ level_data = [
     [
     [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
     [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
-    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 6],
-    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 0, 6],
-    [6, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 6, 0, 0, 0, 0, 0, 0, 6],
-    [6, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 6, 0, 0, 0, 5, 0, 0, 6],
+    [6, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 0, 6],
     [6, 0, 0, 0, 6, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
     [6, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 0, 0, 0, 0, 4, 0, 0, 6],
     [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 0, 6],
@@ -333,7 +333,7 @@ level_data = [
 ]
 
 
-#level reset
+#resets level
 def reset_level(level_num):
     global level
     player.reset(100, screen_height - 300)
@@ -351,11 +351,12 @@ exit_group = pygame.sprite.Group()
 
 world = reset_level(level)
 
-# create UI buttons
+# create buttons
 restart_button = Button(screen_width // 2 - 50, screen_height // 2 + 100, restart_img)
 start_button = Button(screen_width // 2 - 350, screen_height // 2, start_img)
 exit_button = Button(screen_width // 2 + 150, screen_height // 2, exit_img)
 
+# resets current level, used when the player dies
 def next_level():
     global level, world, game_over
     level += 1
@@ -364,6 +365,7 @@ def next_level():
     world = reset_level(level)
     game_over = 0
 
+# goes to the next level when the player reaches the exit door
 def restart_current():
     global world, game_over
     world = reset_level(level)
