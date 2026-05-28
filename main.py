@@ -373,7 +373,11 @@ while run:
             if event.key == pygame.K_r and game_over == -1:
                 player.reset(100, screen_height - 300)
                 game_over = 0
-
+        # press R to restart after winning
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r and game_over == 1:
+                    player.reset(100, screen_height - 300)
+                    game_over = 0
     pygame.display.update()
 
 pygame.quit()
