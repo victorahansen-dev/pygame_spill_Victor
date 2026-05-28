@@ -24,6 +24,7 @@ start_img = pygame.image.load('assets/img/start_btn.png').convert_alpha()
 exit_img = pygame.image.load('assets/img/exit_btn.png').convert_alpha()
 door_img = pygame.image.load('assets/img/door.png').convert_alpha()
 sand_img = pygame.image.load('assets/img/tile_sand.png').convert_alpha()
+stone_img = pygame.image.load('assets/img/tile_stone.png').convert_alpha()
 
 # clickable button class
 class Button():
@@ -232,6 +233,13 @@ class World():
                     img_rect.y = row_count * tile_size
                     tile = (img, img_rect)
                     self.tile_list.append(tile)
+                if tile == 7:
+                    img = pygame.transform.scale(stone_img, (tile_size, tile_size))
+                    img_rect = img.get_rect()
+                    img_rect.x = col_count * tile_size
+                    img_rect.y = row_count * tile_size
+                    tile = (img, img_rect)
+                    self.tile_list.append(tile)
                 col_count += 1
             row_count += 1
 
@@ -279,7 +287,6 @@ class Lava(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-
 
 # level layout — 0: empty, 1: lava, 2: dirt, 3: grass, 4: enemy, 5: exit door, 6: sand
 level = 0
@@ -330,6 +337,29 @@ level_data = [
     [6, 6, 6, 6, 6, 6, 6, 1, 1, 1, 1, 1, 1, 6, 6, 6, 6, 6, 6, 6],
     [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
     ],
+    # level 3
+[
+    [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
+    [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
+    [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
+    [7, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 7, 0, 0, 0, 5, 0, 0, 0, 7],
+    [7, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 0, 0, 7],
+    [7, 0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
+    [7, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
+    [7, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 7],
+    [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
+    [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 7],
+    [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
+    [7, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 7],
+    [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7],
+    [7, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 7],
+    [7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 0, 0, 7],
+    [7, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
+    [7, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 7],
+    [7, 0, 0, 0, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
+    [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
+    [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7]
+]
 ]
 
 
@@ -383,6 +413,10 @@ while run:
             run = False
         if start_button.draw():
             menu = False
+        startMenu_font = pygame.font.SysFont('Arial', 80, bold=True)
+        startMenu_text = startMenu_font.render('super epic platformer', True, (0, 175, 0))
+        screen.blit(startMenu_text, (screen_width // 2 - startMenu_text.get_width() // 2,
+                                screen_height // 3  - startMenu_text.get_height() // 2))
 
     else:
         # draw the level
@@ -399,8 +433,8 @@ while run:
         game_over = player.update(game_over)
         # death screen
         if game_over == -1:
-            death_font = pygame.font.SysFont('Arial', 80, bold=True)
-            death_text = death_font.render('You died! D: Try again?', True, (255, 215, 0))
+            death_font = pygame.font.SysFont('Arial', 60, bold=True)
+            death_text = death_font.render('You died! D: Try again?', True, (0, 175, 100))
             screen.blit(death_text, (screen_width // 2 - death_text.get_width() // 2,
                                      screen_height // 2 - death_text.get_height() // 2))
             if restart_button.draw():
@@ -408,12 +442,16 @@ while run:
 
         # win screen
         if game_over == 1:
-            win_font = pygame.font.SysFont('Arial', 80, bold=True)
-            win_text = win_font.render('You did it! :D', True, (255, 215, 0))
+            win_font = pygame.font.SysFont('Arial', 60, bold=True)
+            win_text = win_font.render('You did it! :D press R to proceed', True, (0, 175, 100))
             screen.blit(win_text, (screen_width // 2 - win_text.get_width() // 2,
                                     screen_height // 2 - win_text.get_height() // 2))
             if restart_button.draw():
                 next_level()
+        # FPS counter
+        fps_font = pygame.font.SysFont('Arial', 20)
+        fps_text = fps_font.render(f'FPS: {int(clock.get_fps())}', True, (255, 255, 0))
+        screen.blit(fps_text, (10, 10))
 
     # handle events
     for event in pygame.event.get():
