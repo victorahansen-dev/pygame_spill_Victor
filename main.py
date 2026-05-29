@@ -21,6 +21,11 @@ game_over = 0
 
 menu = True
 
+game_paused = False
+
+pause_font = pygame.font.SysFont('Arial', 60, bold=True)
+pause_text = pause_font.render('GAME PAUSED; press esc to continue', True, (0, 175, 100))
+
 # load images
 bg_img = pygame.image.load('assets/img/sky.png').convert()
 
@@ -32,9 +37,7 @@ exit_img = pygame.image.load('assets/img/exit_btn.png').convert_alpha()
 
 door_img = pygame.image.load('assets/img/door.png').convert_alpha()
 
-sand_img = pygame.image.load('assets/img/tile_sand.png').convert_alpha()
 
-stone_img = pygame.image.load('assets/img/tile_stone.png').convert_alpha()
 
 # clickable button class
 class Button():
@@ -188,10 +191,12 @@ class Player():
 class World():
     def __init__(self, data):
         self.tile_list = []
-        # load tile images
         lava_img = pygame.image.load('assets/img/lava.png').convert_alpha()
         dirt_img = pygame.image.load('assets/img/tile_dirt.png').convert_alpha()
         grass_img = pygame.image.load('assets/img/tile_grass.png').convert_alpha()
+        sand_img = pygame.image.load('assets/img/tile_sand.png').convert_alpha()
+        stone_img = pygame.image.load('assets/img/tile_stone.png').convert_alpha()
+        metal_img = pygame.image.load('assets/img/tile_metal.png').convert_alpha()
 
         # loop through grid and place tiles/objects based on their number
         row_count = 0
@@ -199,8 +204,8 @@ class World():
             col_count = 0
             for tile in row:
                 if tile == 1:
-                    lava = Lava(col_count * tile_size, row_count * tile_size)
-                    lava_group.add(lava)
+                    lava_img = Lava(col_count * tile_size, row_count * tile_size)
+                    lava_group.add(lava_img)
                 if tile == 2:
                     img = pygame.transform.scale(dirt_img, (tile_size, tile_size))
                     img_rect = img.get_rect()
@@ -235,6 +240,13 @@ class World():
                     self.tile_list.append(tile)
                 if tile == 7:
                     img = pygame.transform.scale(stone_img, (tile_size, tile_size))
+                    img_rect = img.get_rect()
+                    img_rect.x = col_count * tile_size
+                    img_rect.y = row_count * tile_size
+                    tile = (img, img_rect)
+                    self.tile_list.append(tile)
+                if tile == 8:
+                    img = pygame.transform.scale(metal_img, (tile_size, tile_size))
                     img_rect = img.get_rect()
                     img_rect.x = col_count * tile_size
                     img_rect.y = row_count * tile_size
@@ -331,11 +343,9 @@ level_data = [
     [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
     [6, 6, 6, 6, 6, 6, 6, 1, 1, 1, 1, 1, 1, 6, 6, 6, 6, 6, 6, 6],
     [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
-
     ],
     # level 3
-[
-
+    [
     [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
     [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
     [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
@@ -356,8 +366,9 @@ level_data = [
     [7, 0, 0, 0, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
     [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
     [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7]
-
-]
+    ],
+    # level 4
+    
 
 ]
 
@@ -384,7 +395,7 @@ restart_button = Button(screen_width // 2 - 50, screen_height // 2 + 100, restar
 start_button = Button(screen_width // 2 - 350, screen_height // 2, start_img)
 exit_button = Button(screen_width // 2 + 150, screen_height // 2, exit_img)
 
-# resets current level, used when the player dies
+# goes to the next level when the player reaches the exit door
 def next_level():
     global level, world, game_over
     level += 1
@@ -393,7 +404,7 @@ def next_level():
     world = reset_level(level)
     game_over = 0
 
-# goes to the next level when the player reaches the exit door
+# resets current level, used when the player dies
 def restart_current():
     global world, game_over
     world = reset_level(level)
@@ -413,7 +424,6 @@ while run:
         startMenu_font = pygame.font.SysFont('Arial', 80, bold=True)
         startMenu_text = startMenu_font.render('super epic platformer', True, (0, 175, 0))
         screen.blit(startMenu_text, (screen_width // 2 - startMenu_text.get_width() // 2,
-
                                 screen_height // 3  - startMenu_text.get_height() // 2))
 
     else:
@@ -439,9 +449,7 @@ while run:
             death_font = pygame.font.SysFont('Arial', 60, bold=True)
             death_text = death_font.render('You died! D: Try again?', True, (0, 175, 100))
             screen.blit(death_text, (screen_width // 2 - death_text.get_width() // 2,
-
                                      screen_height // 2 - death_text.get_height() // 2))
-
             if restart_button.draw():
                 restart_current()
         # win screen
@@ -452,18 +460,39 @@ while run:
                                     screen_height // 2 - win_text.get_height() // 2))
             if restart_button.draw():
                 next_level()
-        # FPS counter
+            
+    # FPS counter (AI coded, only for troubleshooting)
         fps_font = pygame.font.SysFont('Arial', 20)
-        fps_text = fps_font.render(f'FPS: {int(clock.get_fps())}', True, (255, 255, 0))
+        fps_text = fps_font.render(f'FPS: {int(clock.get_fps())}', True, (255, 255, 255))
         screen.blit(fps_text, (10, 10))
-    # handle events
+
+    #pause menu (partially AI coded)
+        if game_paused:
+                pause_font = pygame.font.SysFont('Arial', 60, bold=True)
+                pause_text = pause_font.render('GAME PAUSED; press esc to continue', True, (0, 175, 100))
+                screen.blit(pause_text, (screen_width // 2 - pause_text.get_width() // 2,
+                                        screen_height // 2 - pause_text.get_height() // 2))    
+        pygame.display.update()
+        while game_paused:
+            clock.tick(fps)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        game_paused = False
+                        
+    # handle events            
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            run = False
+         run = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r and game_over == -1:
                 restart_current()
             if event.key == pygame.K_r and game_over == 1:
                 next_level()
+            if event.key == pygame.K_ESCAPE:
+                game_paused = not game_paused  # toggle pause
     pygame.display.update()
 pygame.quit()
