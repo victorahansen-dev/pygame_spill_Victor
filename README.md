@@ -32,5 +32,9 @@ Byttet farge på tekst pop-ups og legget til en ny en i start meny.
 Gjorde R-tasten universell, slik at den kan brukes både etter seier og tap.
 
 Nytt innhold - spill (nivå 2, niva 3)
-Introduserte et nytt visuelt tema med sand-grafikk i tillegg til å lage et helt nytt oppsett for Nivå 2.
-Introdusert et til nytt tema med stein-grafikk med nytt oppsett for nivå 3.
+laget et nytt visuelt tema med sand-grafikk i tillegg til å lage et helt nytt oppsett for Nivå 2.
+kom opp med et til nytt tema med stein-grafikk med nytt oppsett for nivå 3.
+
+29.05.2026
+Laget en pause meny - kan brukes gjennom å trykke ESC knappen
+lagde nivå 4, ny tema med metall-grafikk og annerledes oppsett.
