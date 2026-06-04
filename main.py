@@ -36,7 +36,7 @@ exit_img = pygame.image.load('assets/img/exit_btn.png').convert_alpha()
 
 door_img = pygame.image.load('assets/img/door.png').convert_alpha()
 
-
+next_img = pygame.image.load('assets/img/next_btn.png').convert_alpha()
 
 # clickable button class
 class Button():
@@ -295,9 +295,9 @@ class Lava(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 # level layout — 0: empty, 1: lava, 2: dirt, 3: grass, 4: enemy, 5: exit door, 6: sand, 7: stone, 8: metal
-level = 3
+level = 0
 level_data = [
-    # level 1
+    # level 0
     [
     [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
     [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
@@ -414,6 +414,7 @@ world = reset_level(level)
 restart_button = Button(screen_width // 2 - 50, screen_height // 2 + 100, restart_img)
 start_button = Button(screen_width // 2 - 350, screen_height // 2, start_img)
 exit_button = Button(screen_width // 2 + 150, screen_height // 2, exit_img)
+next_button = Button(screen_width // 2 - 500, screen_height // 3 + 100, next_img)
 
 # goes to the next level when the player reaches the exit door
 def next_level():
@@ -488,7 +489,7 @@ while run:
                 win_text = win_font.render('You did it! :D press R to proceed', True, (0, 175, 100))
                 screen.blit(win_text, (screen_width // 2 - win_text.get_width() // 2,
                                     screen_height // 2 - win_text.get_height() // 2))
-                if restart_button.draw():
+                if next_button.draw():
                     next_level()
             
     # FPS counter (AI coded, only for troubleshooting)
