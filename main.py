@@ -23,8 +23,7 @@ menu = True
 
 game_paused = False
 
-pause_font = pygame.font.SysFont('Arial', 60, bold=True)
-pause_text = pause_font.render('GAME PAUSED; press esc to continue', True, (0, 175, 100))
+game_beaten = False
 
 # load images
 bg_img = pygame.image.load('assets/img/sky.png').convert()
@@ -296,7 +295,7 @@ class Lava(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 # level layout — 0: empty, 1: lava, 2: dirt, 3: grass, 4: enemy, 5: exit door, 6: sand, 7: stone, 8: metal
-level = 0
+level = 3
 level_data = [
     # level 1
     [
@@ -418,12 +417,14 @@ exit_button = Button(screen_width // 2 + 150, screen_height // 2, exit_img)
 
 # goes to the next level when the player reaches the exit door
 def next_level():
-    global level, world, game_over
+    global level, world, game_over, game_beaten
     level += 1
     if level >= len(level_data):
-        level = 0
-    world = reset_level(level)
-    game_over = 0
+        game_beaten = True
+        game_over = 1
+    else:
+        world = reset_level(level)
+        game_over = 0
 
 # resets current level, used when the player dies
 def restart_current():
@@ -455,12 +456,9 @@ while run:
             blob_group.update()
             lava_group.update()
             exit_group.update()
-
         blob_group.draw(screen)
         lava_group.draw(screen)
         exit_group.draw(screen)
-
-
 
         # update player
         game_over = player.update(game_over)
@@ -473,14 +471,25 @@ while run:
                                      screen_height // 2 - death_text.get_height() // 2))
             if restart_button.draw():
                 restart_current()
-        # win screen
+        # win screen if all levels have been beaten
         if game_over == 1:
-            win_font = pygame.font.SysFont('Arial', 60, bold=True)
-            win_text = win_font.render('You did it! :D press R to proceed', True, (0, 175, 100))
-            screen.blit(win_text, (screen_width // 2 - win_text.get_width() // 2,
+            if game_beaten:
+                gameBeaten_font = pygame.font.SysFont('Arial', 40, bold=True)
+                gameBeaten_text = gameBeaten_font.render('You beat the game, Good job! Press R to restart', True, (0, 175, 100))
+                screen.blit(gameBeaten_text, (screen_width // 2 - gameBeaten_text.get_width() // 2,
+                                            screen_height // 2 - gameBeaten_text.get_height() // 2))
+                if restart_button.draw():
+                    game_beaten = False
+                    level = 0
+                    world = reset_level(level)
+                    game_over = 0
+            else:
+                win_font = pygame.font.SysFont('Arial', 60, bold=True)
+                win_text = win_font.render('You did it! :D press R to proceed', True, (0, 175, 100))
+                screen.blit(win_text, (screen_width // 2 - win_text.get_width() // 2,
                                     screen_height // 2 - win_text.get_height() // 2))
-            if restart_button.draw():
-                next_level()
+                if restart_button.draw():
+                    next_level()
             
     # FPS counter (AI coded, only for troubleshooting)
         fps_font = pygame.font.SysFont('Arial', 20)
@@ -512,7 +521,8 @@ while run:
             if event.key == pygame.K_r and game_over == -1:
                 restart_current()
             if event.key == pygame.K_r and game_over == 1:
-                next_level()
+                if not game_beaten:
+                    next_level()
             if event.key == pygame.K_ESCAPE:
                 game_paused = not game_paused  # toggle pause
     pygame.display.update()
