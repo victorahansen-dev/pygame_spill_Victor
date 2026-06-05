@@ -64,7 +64,6 @@ class Button():
         screen.blit(self.image, self.rect)
         return action
 
-
 # player class handles movement, animation, and collision
 class Player():
     def __init__(self, x, y):
@@ -96,7 +95,6 @@ class Player():
                 dx += 5
                 self.counter += 1
                 self.direction = 1
-
             # reset to idle frame when no movement key is pressed
             if key[pygame.K_LEFT] == False and key[pygame.K_RIGHT] == False and key[pygame.K_a] == False and key[pygame.K_d] == False:
                 self.counter = 0
@@ -492,12 +490,12 @@ while run:
                 if next_button.draw():
                     next_level()
             
-    # FPS counter (AI coded, only for troubleshooting)
+    # FPS counter (only for troubleshooting)
         fps_font = pygame.font.SysFont('Arial', 20)
         fps_text = fps_font.render(f'FPS: {int(clock.get_fps())}', True, (255, 255, 255))
         screen.blit(fps_text, (10, 10))
 
-    #pause menu (partially AI coded)
+    #pause menu
         if game_paused:
                 pause_font = pygame.font.SysFont('Arial', 60, bold=True)
                 pause_text = pause_font.render('GAME PAUSED; press esc to continue', True, (0, 175, 100))
