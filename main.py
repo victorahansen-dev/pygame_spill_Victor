@@ -36,8 +36,6 @@ exit_img = pygame.image.load('assets/img/exit_btn.png').convert_alpha()
 
 door_img = pygame.image.load('assets/img/door.png').convert_alpha()
 
-next_img = pygame.image.load('assets/img/next_btn.png').convert_alpha()
-
 # clickable button class
 class Button():
     def __init__(self, x, y, image):
@@ -412,7 +410,6 @@ world = reset_level(level)
 restart_button = Button(screen_width // 2 - 50, screen_height // 2 + 100, restart_img)
 start_button = Button(screen_width // 2 - 350, screen_height // 2, start_img)
 exit_button = Button(screen_width // 2 + 150, screen_height // 2, exit_img)
-next_button = Button(screen_width // 2 - 500, screen_height // 3 + 100, next_img)
 
 # goes to the next level when the player reaches the exit door
 def next_level():
@@ -473,8 +470,8 @@ while run:
         # win screen if all levels have been beaten
         if game_over == 1:
             if game_beaten:
-                gameBeaten_font = pygame.font.SysFont('Arial', 40, bold=True)
-                gameBeaten_text = gameBeaten_font.render('You beat the game, Good job! Press R to restart', True, (0, 175, 100))
+                gameBeaten_font = pygame.font.SysFont('Arial', 30, bold=True)
+                gameBeaten_text = gameBeaten_font.render('You beat the game, Good job! Press the button to restart', True, (0, 175, 100))
                 screen.blit(gameBeaten_text, (screen_width // 2 - gameBeaten_text.get_width() // 2,
                                             screen_height // 2 - gameBeaten_text.get_height() // 2))
                 if restart_button.draw():
@@ -487,7 +484,7 @@ while run:
                 win_text = win_font.render('You did it! :D press R to proceed', True, (0, 175, 100))
                 screen.blit(win_text, (screen_width // 2 - win_text.get_width() // 2,
                                     screen_height // 2 - win_text.get_height() // 2))
-                if next_button.draw():
+                if pygame.K_r == True:
                     next_level()
             
     # FPS counter (only for troubleshooting)
@@ -511,7 +508,7 @@ while run:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         game_paused = False
-                        
+
     # handle events            
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
