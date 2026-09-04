@@ -8,9 +8,17 @@ clock = pygame.time.Clock()
 
 fps = 60
 
-screen_width = 1000
-screen_height = 1000
-screen = pygame.display.set_mode((screen_width, screen_height))
+# fixed internal game resolution — all game logic/coordinates still use this
+GAME_WIDTH = 1000
+GAME_HEIGHT = 1000
+screen_width = GAME_WIDTH
+screen_height = GAME_HEIGHT
+
+# everything in the game draws onto this fixed-size surface
+screen = pygame.Surface((GAME_WIDTH, GAME_HEIGHT))
+
+# the actual, resizable window shown to the player
+window = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT), pygame.RESIZABLE)
 
 pygame.display.set_caption('platformer game')
 
@@ -36,6 +44,29 @@ exit_img = pygame.image.load('assets/img/exit_btn.png').convert_alpha()
 
 door_img = pygame.image.load('assets/img/door.png').convert_alpha()
 
+
+# scales real window mouse coordinates into game-surface coordinates
+def get_scaled_mouse_pos():
+    win_w, win_h = window.get_size()
+    scale = min(win_w / GAME_WIDTH, win_h / GAME_HEIGHT)
+    new_w, new_h = int(GAME_WIDTH * scale), int(GAME_HEIGHT * scale)
+    off_x, off_y = (win_w - new_w) // 2, (win_h - new_h) // 2
+    mx, my = pygame.mouse.get_pos()
+    return ((mx - off_x) / scale, (my - off_y) / scale)
+
+
+# scales the fixed game surface up/down to fit the current window, letterboxed
+def present():
+    win_w, win_h = window.get_size()
+    scale = min(win_w / GAME_WIDTH, win_h / GAME_HEIGHT)
+    new_w, new_h = int(GAME_WIDTH * scale), int(GAME_HEIGHT * scale)
+    scaled = pygame.transform.smoothscale(screen, (new_w, new_h))
+
+    window.fill((0, 0, 0))  # letterbox bars
+    window.blit(scaled, ((win_w - new_w) // 2, (win_h - new_h) // 2))
+    pygame.display.update()
+
+
 # clickable button class
 class Button():
     def __init__(self, x, y, image):
@@ -47,8 +78,8 @@ class Button():
 
     def draw(self):
         action = False
-        # get mouse position
-        pos = pygame.mouse.get_pos()
+        # get mouse position, converted into game-surface coordinates
+        pos = get_scaled_mouse_pos()
 
         # check if mouse is hovering and clicked
         if self.rect.collidepoint(pos):
@@ -498,13 +529,15 @@ while run:
                 pause_text = pause_font.render('GAME PAUSED; press esc to continue', True, (0, 175, 100))
                 screen.blit(pause_text, (screen_width // 2 - pause_text.get_width() // 2,
                                         screen_height // 2 - pause_text.get_height() // 2))    
-        pygame.display.update()
+        present()
         while game_paused:
             clock.tick(fps)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                if event.type == pygame.VIDEORESIZE:
+                    window = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         game_paused = False
@@ -513,6 +546,8 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
          run = False
+        if event.type == pygame.VIDEORESIZE:
+            window = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r and game_over == -1:
                 restart_current()
@@ -521,5 +556,5 @@ while run:
                     next_level()
             if event.key == pygame.K_ESCAPE:
                 game_paused = not game_paused  # toggle pause
-    pygame.display.update()
+    present()
 pygame.quit()
