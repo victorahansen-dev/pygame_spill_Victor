@@ -376,7 +376,7 @@ level_data = [
     [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
     [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
     [7, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 7, 0, 0, 0, 5, 0, 0, 0, 7],
-    [7, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 0, 0, 7],
+    [7, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 0, 0, 7],
     [7, 0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
     [7, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
     [7, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 7],
@@ -525,7 +525,7 @@ while run:
 
     #pause menu
         if game_paused:
-                pause_font = pygame.font.SysFont('Arial', 60, bold=True)
+                pause_font = pygame.font.SysFont('Arial', 40, bold=True)
                 pause_text = pause_font.render('GAME PAUSED; press esc to continue', True, (0, 175, 100))
                 screen.blit(pause_text, (screen_width // 2 - pause_text.get_width() // 2,
                                         screen_height // 2 - pause_text.get_height() // 2))    
