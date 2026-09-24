@@ -155,7 +155,7 @@ class Player():
             # tile collision detection
             self.in_air = True
             for tile in world.tile_list:
-                # horizontal collision — stop horizontal movement
+                # horizontal collision
                 if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
                     dx = 0
 
